@@ -1,6 +1,6 @@
 window.ChatbotWidget = (() => {
   const DEFAULTS = {
-    apiBase: "",
+    apiBase: "https://mysiteaitesting.vercel.app",
     configUrl: "/config/default.json",
     position: "bottom-right", // bottom-right | bottom-left
     buttonText: "Chat",
