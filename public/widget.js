@@ -261,7 +261,21 @@ window.ChatbotWidget = (() => {
       return config;
     }
 
-async function sendMessage() {
+    async function sendMessage() {
+      if (isLoading) return;
+
+      const text = input.value.trim();
+      if (!text) return;
+
+      input.value = "";
+      addBubble("user", text);
+
+      isLoading = true;
+      setStatus("Thinking...");
+
+      try {
+        const cfg = await ensureConfigLoaded();
+
 const res = await fetch(`${opts.apiBase}/api/chat`, {
   method: "POST",
   headers: { "Content-Type": "application/json" },
@@ -277,26 +291,6 @@ if (!res.ok) {
 
 addBubble("bot", data.reply || "No reply.");
 
-
-      try {
-        const cfg = await ensureConfigLoaded();
-
-        const res = await fetch(`${opts.apiBase}/api/chat`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: text, config: cfg })
-        });
-
-        const data = await res.json();
-        const reply = data?.reply || data?.error || "Unknown error.";
-
-        addBubble("bot", reply);
-      } catch (err) {
-        addBubble("bot", "Something went wrong. Please try again.");
-      } finally {
-        isLoading = false;
-        setStatus("Ready");
-      }
     }
 
     // Events
